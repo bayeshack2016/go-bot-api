@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Ridb:</strong>
+  <%= @facility.ridb_id %>
+</p>
+
+<p>
+  <strong>Legacy:</strong>
+  <%= @facility.legacy_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @facility.name %>
+</p>
+
+<%= link_to 'Edit', edit_facility_path(@facility) %> |
+<%= link_to 'Back', facilities_path %>

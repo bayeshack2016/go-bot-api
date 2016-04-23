@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ridb_id: MyString
+  legacy_id: MyString
+  name: MyString
+
+two:
+  ridb_id: MyString
+  legacy_id: MyString
+  name: MyString
