@@ -25,7 +25,7 @@ class RecommendationsController < ApplicationController
     # Retrieve top 5 recommendations based on where people from the specified area went
     start_loc_info = get_location_add(start_location)
 
-    render json: {recareas: get_closest_five(start_loc_info, activity_name)}
+    render json: {recareas: get_closest_five(start_loc_info, activity_name, trans_mode)}
   end
 
   # get address of location. ex: "94101" returns "San Francisco, CA, USA"
@@ -47,7 +47,7 @@ class RecommendationsController < ApplicationController
     image_url = image_response["url_l"]
   end
 
-  def get_closest_five(location_info, activity_name)
+  def get_closest_five(location_info, activity_name, trans_mode)
     orig_lat = location_info[:latitude]
     orig_lng = location_info[:longitude]
 
@@ -67,21 +67,28 @@ class RecommendationsController < ApplicationController
       dest_lng = recarea['RecAreaLongitude']
 
       # https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=&key=YOUR_API_KEY
-      uri = URI("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{orig_lat},#{orig_lng}&destinations=#{dest_lat},#{dest_lng}&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
+      uri = URI("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{orig_lat},#{orig_lng}&destinations=#{dest_lat},#{dest_lng}&mode=#{trans_mode}&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
       res = Net::HTTP.get(uri)
       map_json_result = JSON.parse(res)
 
       distance = map_json_result['rows'].first['elements'].first['distance']['text']
       travel_time = map_json_result['rows'].first['elements'].first['duration']['text']
 
+      # get weather info
+      uri = URI("https://api.forecast.io/forecast/#{ENV['WEATHER_API_KEY']}/#{dest_lat},#{dest_lng}")
+      res = Net::HTTP.get(uri)
+      weather_json_result = JSON.parse(res)
+
+      weather_info = {:summary => weather_json_result['currently']['summary'], :temperature => weather_json_result['currently']['temperature']}
+
       ra = {:id => recarea['RecAreaID'].to_s, :name => recarea['RecAreaName'].titleize,
             :image => get_image_url(dest_lat, dest_lng), :distance => distance, :travel_time => travel_time,
-            :latitude => dest_lat, :longitude => dest_lng}
+            :latitude => dest_lat, :longitude => dest_lng, :weather => weather_info}
 
       simplified_recreas << ra
     end
 
-    return simplified_recreas
+    return simplified_recreas.sort {|first,second| first[:travel_time]<=>second[:travel_time]}
   end
 
 end
