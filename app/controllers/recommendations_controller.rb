@@ -39,12 +39,12 @@ class RecommendationsController < ApplicationController
   end
 
   def get_image_url(latitude,longitude)
-    uri = URI("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=62b32c5d41d73672e2953c91a317de3c&lat=#{latitude}&lon=#{longitude}&radius=5&page=1&format=json&nojsoncallback=1&extras=description,license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_sq,url_t,url_s,url_q,url_m,url_n,url_z,url_c,url_l,url_o")
+    uri = URI("https://api.500px.com/v1/photos/search.json?geo=#{latitude},#{longitude}%2C1km&image_size=3&sort=undefined&only=Landscapes&_method=get&sdk_key=#{ENV['IMAGE_API_KEY']}&rpp=100")
     res = Net::HTTP.get(uri)
     value = JSON.parse(res)
 
-    image_response = value['photos']['photo'][0]
-    image_url = image_response["url_l"]
+    image_response = value['photos'].first['images'].first
+    image_url = image_response['url']
   end
 
   def get_closest_five(location_info, activity_name, trans_mode)
