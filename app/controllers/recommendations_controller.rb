@@ -25,7 +25,9 @@ class RecommendationsController < ApplicationController
     # Retrieve top 5 recommendations based on where people from the specified area went
     start_loc_info = get_location_add(start_location)
 
-    render json: {recareas: get_closest_five(start_loc_info, activity_name, trans_mode)}
+    recommendations = get_closest_five(start_loc_info, activity_name, trans_mode)
+
+    render json: {recareas: recommendations}
   end
 
   # get address of location. ex: "94101" returns "San Francisco, CA, USA"
@@ -59,10 +61,12 @@ class RecommendationsController < ApplicationController
 
     # https://ridb.recreation.gov/api/v1/recareas?apikey=3D698306D5CF4F04A0D561F52B79AFED&radius=5&latitude=37.7749295&longitude=-122.4194155
     # get all recareas within 5 miles of specified location
-    uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=5&latitude=#{orig_lat}&longitude=#{orig_lng}&activity=#{activities[activity_name.to_sym]}")
+    uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=100&latitude=#{orig_lat}&longitude=#{orig_lng}&activity=#{activities[activity_name.to_sym]}")
 
     res = Net::HTTP.get(uri)
-    recareas = JSON.parse(res)['RECDATA'].first(5)
+    recareas = JSON.parse(res)['RECDATA']
+
+    recareas = recareas.sort {|first, second| distance([orig_lat, orig_lng],[first['RecAreaLatitude'], second['RecAreaLongitude']]) <=> distance([orig_lat, orig_lng],[second['RecAreaLatitude'],second['RecAreaLongitude']])}[0..5]
 
     # each recarea = {image="", id=0, name="", distance="", travel_time=""}
     simplified_recreas = []
@@ -74,6 +78,10 @@ class RecommendationsController < ApplicationController
       uri = URI("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{orig_lat},#{orig_lng}&destinations=#{dest_lat},#{dest_lng}&mode=#{trans_mode}&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
       res = Net::HTTP.get(uri)
       map_json_result = JSON.parse(res)
+
+      if map_json_result['rows'].first['elements'].first['status'] != 'OK'
+        next
+      end
 
       distance = map_json_result['rows'].first['elements'].first['distance']['text']
       travel_time = map_json_result['rows'].first['elements'].first['duration']['text']
@@ -94,6 +102,23 @@ class RecommendationsController < ApplicationController
     end
 
     return simplified_recreas.sort {|first,second| first[:travel_time_seconds]<=>second[:travel_time_seconds]}
+  end
+
+  def distance(loc1, loc2)
+    rad_per_deg = Math::PI/180  # PI / 180
+    rkm = 6371                  # Earth radius in kilometers
+    rm = rkm * 1000             # Radius in meters
+
+    dlat_rad = (loc2[0]-loc1[0]) * rad_per_deg  # Delta, converted to rad
+    dlon_rad = (loc2[1]-loc1[1]) * rad_per_deg
+
+    lat1_rad, lon1_rad = loc1.map {|i| i * rad_per_deg }
+    lat2_rad, lon2_rad = loc2.map {|i| i * rad_per_deg }
+
+    a = Math.sin(dlat_rad/2)**2 + Math.cos(lat1_rad) * Math.cos(lat2_rad) * Math.sin(dlon_rad/2)**2
+    c = 2 * Math::atan2(Math::sqrt(a), Math::sqrt(1-a))
+
+    rm * c # Delta in meters
   end
 
 end
