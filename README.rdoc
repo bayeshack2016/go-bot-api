@@ -84,6 +84,7 @@ you should see <tt>{"status":"GO Bot API is Running"}</tt>
   * Reasons for satisfaction/dissatisfaction
   * Reasons for content
   * General feedback
+  * More data on available parks at all levels of government
 * Provide data analysis to display information such as:
   * Activities most queried in your area, broken down by percentage
   * Demographic analysis per park
