@@ -6,26 +6,24 @@ Welcome to the GO Bot API (Great Outdoors Bot) GitHub!
 
 Software and versions used:
 * Ruby Version Manager (RVM) v1.27.0 (RVM works well with MacOS/Linux but not so well with Windows)
-** RVM works well with MacOS/Linux but not so well with Windows. It is not a strict requirement to develop/run this API
+  * RVM works well with MacOS/Linux but not so well with Windows. It is not a strict requirement to develop/run this API
 * Ruby v2.2.4
 * Bundler v1.11.2
 * To obtain remaining gems, run <tt>bundle</tt> within <tt>go-bot-api/</tt>
 
 == Local Deployment
 
-# Create a file named <tt>go-bot-api/config/application.yml</tt>
-** Add the following environment variables within the <tt>application.yml</tt> to be used by the API
-<tt>
-RIDB_API_KEY
-REDIS_URL
-GOOGLE_MAPS_API_KEY]
-# Forecase.io
-WEATHER_API_KEY
-# 500px
-IMAGE_API_KEY
-</tt>
-# <tt>cd</tt> into <tt>go-bot-api/</tt>
-# run the command: <tt>bin/rails server</tt>
+1. Create a file named <tt>go-bot-api/config/application.yml</tt>
+  Add the following environment variables within the <tt>application.yml</tt> to be used by the API
+  RIDB_API_KEY
+  REDIS_URL
+  GOOGLE_MAPS_API_KEY]
+  # Forecase.io
+  WEATHER_API_KEY
+  # 500px
+  IMAGE_API_KEY
+2. <tt>cd</tt> into <tt>go-bot-api/</tt>
+3. run the command: <tt>bin/rails server</tt>
 
 By default, this will deploy to port 3000.
 
@@ -72,19 +70,19 @@ you should see <tt>{"status":"GO Bot API is Running"}</tt>
 
 == Opportunities for Growth
 
-# More social interaction within Social Media
-** Invite Facebook friends to join you on a trip
-** Share a trip
-# Utilize transaction data to provide popular destinations based on bookings made around your location
-** This would require improved data management to create the link between the transactions and parks
-# Increased image accuracy
-** Centralized image warehouse would be crucial to the success of image accuracy
-# Learn based on user interaction and build personality profile to accurately provide suggestions
-# Consume more data such as:
-** Demographic information
-** Reasons for satisfaction/dissatisfaction
-** Reasons for content
-** General feedback
-# Provide data analysis to display information such as:
-** Activities most queried in your area, broken down by percentage
-** Demographic analysis per park
+* More social interaction within Social Media
+  * Invite Facebook friends to join you on a trip
+  * Share a trip
+* Utilize transaction data to provide popular destinations based on bookings made around your location
+  * This would require improved data management to create the link between the transactions and parks
+* Increased image accuracy
+  * Centralized image warehouse would be crucial to the success of image accuracy
+* Learn based on user interaction and build personality profile to accurately provide suggestions
+* Consume more data such as:
+  * Demographic information
+  * Reasons for satisfaction/dissatisfaction
+  * Reasons for content
+  * General feedback
+* Provide data analysis to display information such as:
+  * Activities most queried in your area, broken down by percentage
+  * Demographic analysis per park
