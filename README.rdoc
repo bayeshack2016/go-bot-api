@@ -1,28 +1,90 @@
-== README
+= GO Bot API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Welcome to the GO Bot API (Great Outdoors Bot) GitHub!
 
-Things you may want to cover:
+== Installation
 
-* Ruby version
+Software and versions used:
+* Ruby Version Manager (RVM) v1.27.0 (RVM works well with MacOS/Linux but not so well with Windows)
+** RVM works well with MacOS/Linux but not so well with Windows. It is not a strict requirement to develop/run this API
+* Ruby v2.2.4
+* Bundler v1.11.2
+* To obtain remaining gems, run <tt>bundle</tt> within <tt>go-bot-api/</tt>
 
-* System dependencies
+== Local Deployment
 
-* Configuration
+# Create a file named <tt>go-bot-api/config/application.yml</tt>
+** Add the following environment variables within the <tt>application.yml</tt> to be used by the API
+<tt>
+RIDB_API_KEY
+REDIS_URL
+GOOGLE_MAPS_API_KEY]
+# Forecase.io
+WEATHER_API_KEY
+# 500px
+IMAGE_API_KEY
+</tt>
+# <tt>cd</tt> into <tt>go-bot-api/</tt>
+# run the command: <tt>bin/rails server</tt>
 
-* Database creation
+By default, this will deploy to port 3000.
 
-* Database initialization
+To check the status of the API, go to <tt>http://localhost:3000/</tt>. If GO Bot API is running successfully,
+you should see <tt>{"status":"GO Bot API is Running"}</tt>
 
-* How to run the test suite
+== Available Endpoints
 
-* Services (job queues, cache servers, search engines, etc.)
+<tt>/activities</tt>
+* This returns a full list of activity names that are available in RIDB
+* Example response:
+<tt>
+{"activities":[{"activity_name":"Auto Touring"},{"activity_name":"Biking"},{"activity_name":"Boating"},
+{"activity_name":"Climbing"},{"activity_name":"Historic \u0026 Cultural Site"},{"activity_name":"Camping"},
+{"activity_name":"Interpretive Programs"},{"activity_name":"Fishing"},{"activity_name":"Hiking"},
+{"activity_name":"Horseback Riding"},{"activity_name":"Hunting"},{"activity_name":"Off Highway Vehicle"},
+{"activity_name":"Picnicking"},{"activity_name":"Winter Sports"},{"activity_name":"Recreational Vehicles"},
+{"activity_name":"Visitor Center"},{"activity_name":"Water Sports"},{"activity_name":"Wildlife Viewing"},
+{"activity_name":"Fish Hatchery"},{"activity_name":"Wilderness"},{"activity_name":"Fire Lookouts/Cabins Overnight"},
+{"activity_name":"Fish Viewing Site"},{"activity_name":"Day Use Area"},{"activity_name":"Documentary Site"},
+{"activity_name":"Swimming Site"},{"activity_name":"Organization Site Privately Owned"},
+{"activity_name":"Organization Site Fs Owned"},{"activity_name":"Playground Park Specialized Sport Site"},
+{"activity_name":"Other Recreation Concession Site"},{"activity_name":"Observation Site"},
+{"activity_name":"Hotel/Lodge/Resort Fs Owned"},{"activity_name":"Information Site"},
+{"activity_name":"Recreation Residence"},{"activity_name":"Snowpark"},
+{"activity_name":"Hotel/Lodge/Resort Privately Owned"},{"activity_name":"Environmental Education"},
+{"activity_name":"Photography"},{"activity_name":"Paddling"},{"activity_name":"Swimming"},{"activity_name":"Diving"},
+{"activity_name":"Snorkeling"},{"activity_name":"Horse Camping"}]}
+</tt>
 
-* Deployment instructions
+<tt>/recommendations?activity_name=[activity name]&start_location=[zip|city,state]&trans_mode=[driving|walking|transit]
+* This returns a set of parks that are ordered by shortest travel time
+* Example request:
+<tt>http://localhost:3000/recommendations?activity_name=hiking&start_location=Washington,D.C.&trans_mode=driving</tt>
+* Example response:
+<tt>
+{"recareas":[{"id":"2945","name":"Theodore Roosevelt Island","image":"https://drscdn.500px.org/photo/105437305/w%3D280_h%3D280/df9011a1d50680e6320af177b2ec4c17?v=9","distance":"3.1 mi","travel_time":"11 mins","travel_time_seconds":644,"latitude":38.897864,"longitude":-77.0677,"weather":{"summary":"Clear","temperature":59.7}},
+{"id":"13972","name":"Peirce Mill","image":"https://drscdn.500px.org/photo/129662297/w%3D280_h%3D280/94b5c179091b85b7b9bcfc0100d88087?v=3","distance":"2.9 mi","travel_time":"14 mins","travel_time_seconds":826,"latitude":38.9401100037,"longitude":-77.051877737,"weather":{"summary":"Clear","temperature":59.61}},
+{"id":"2564","name":"Anacostia Park","image":"https://drscdn.500px.org/photo/63688711/w%3D280_h%3D280/f5931b9c2e0e430a871396cf6845e9e7?v=0","distance":"6.1 mi","travel_time":"16 mins","travel_time_seconds":959,"latitude":38.8787169009,"longitude":-76.971174404,"weather":{"summary":"Clear","temperature":59.17}},
+{"id":"2690","name":"Fort Dupont Park","image":"https://drscdn.500px.org/photo/34047940/w%3D280_h%3D280/544375ed79173247daedd68d3b27be4f?v=0","distance":"7.2 mi","travel_time":"19 mins","travel_time_seconds":1146,"latitude":38.878556,"longitude":-76.950016,"weather":{"summary":"Clear","temperature":58.9}},
+{"id":"13916","name":"Claude Moore Colonial Farm","image":"https://drscdn.500px.org/photo/68110123/w%3D280_h%3D280/a31d8dda44f326ae48aa7286f363d10d?v=0","distance":"9.2 mi","travel_time":"21 mins","travel_time_seconds":1289,"latitude":38.953296,"longitude":-77.152073,"weather":{"summary":"Clear","temperature":59.81}},
+{"id":"2789","name":"Kenilworth Park \u0026 Aquatic Gardens","image":"https://drscdn.500px.org/photo/98575361/w%3D280_h%3D280/02699ca5aa115217c2bc21699e935a24?v=13","distance":"6.7 mi","travel_time":"22 mins","travel_time_seconds":1325,"latitude":38.912941888,"longitude":-76.9386660308,"weather":{"summary":"Clear","temperature":59.58}}]}
+</tt>
 
-* ...
+== Opportunities for Growth
 
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+# More social interaction within Social Media
+** Invite Facebook friends to join you on a trip
+** Share a trip
+# Utilize transaction data to provide popular destinations based on bookings made around your location
+** This would require improved data management to create the link between the transactions and parks
+# Increased image accuracy
+** Centralized image warehouse would be crucial to the success of image accuracy
+# Learn based on user interaction and build personality profile to accurately provide suggestions
+# Consume more data such as:
+** Demographic information
+** Reasons for satisfaction/dissatisfaction
+** Reasons for content
+** General feedback
+# Provide data analysis to display information such as:
+** Activities most queried in your area, broken down by percentage
+** Demographic analysis per park
