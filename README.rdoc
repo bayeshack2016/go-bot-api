@@ -73,6 +73,7 @@ you should see <tt>{"status":"GO Bot API is Running"}</tt>
 * More social interaction within Social Media
   * Invite Facebook friends to join you on a trip
   * Share a trip
+  * Event outreach
 * Utilize transaction data to provide popular destinations based on bookings made around your location
   * This would require improved data management to create the link between the transactions and parks
 * Increased image accuracy
