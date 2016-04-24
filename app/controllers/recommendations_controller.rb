@@ -39,7 +39,7 @@ class RecommendationsController < ApplicationController
   end
 
   def get_image_url(latitude,longitude)
-    uri = URI("https://api.500px.com/v1/photos/search.json?geo=#{latitude},#{longitude}%2C1km&image_size=3&sort=undefined&only=Landscapes&_method=get&sdk_key=#{ENV['IMAGE_API_KEY']}&rpp=100")
+    uri = URI("https://api.500px.com/v1/photos/search.json?geo=#{latitude},#{longitude}%2C3km&image_size=3&sort=undefined&only=Landscapes&_method=get&sdk_key=#{ENV['IMAGE_API_KEY']}&rpp=100")
     res = Net::HTTP.get(uri)
     value = JSON.parse(res)
 
