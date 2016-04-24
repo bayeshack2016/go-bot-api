@@ -73,6 +73,7 @@ class RecommendationsController < ApplicationController
 
       distance = map_json_result['rows'].first['elements'].first['distance']['text']
       travel_time = map_json_result['rows'].first['elements'].first['duration']['text']
+      travel_time_seconds = map_json_result['rows'].first['elements'].first['duration']['value']
 
       # get weather info
       uri = URI("https://api.forecast.io/forecast/#{ENV['WEATHER_API_KEY']}/#{dest_lat},#{dest_lng}")
@@ -83,12 +84,12 @@ class RecommendationsController < ApplicationController
 
       ra = {:id => recarea['RecAreaID'].to_s, :name => recarea['RecAreaName'].titleize,
             :image => get_image_url(dest_lat, dest_lng), :distance => distance, :travel_time => travel_time,
-            :latitude => dest_lat, :longitude => dest_lng, :weather => weather_info}
+            :travel_time_seconds => travel_time_seconds, :latitude => dest_lat, :longitude => dest_lng, :weather => weather_info}
 
       simplified_recreas << ra
     end
 
-    return simplified_recreas.sort {|first,second| first[:travel_time]<=>second[:travel_time]}
+    return simplified_recreas.sort {|first,second| first[:travel_time_seconds]<=>second[:travel_time_seconds]}
   end
 
 end
