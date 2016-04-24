@@ -25,7 +25,7 @@ class RecommendationsController < ApplicationController
     # Retrieve top 5 recommendations based on where people from the specified area went
     start_loc_info = get_location_add(start_location)
 
-    render json: {recareas: get_closest_five(start_loc_info).to_json}
+    render json: {recareas: get_closest_five(start_loc_info, activity_name).to_json}
   end
 
   # get address of location. ex: "94101" returns "San Francisco, CA, USA"
@@ -47,18 +47,18 @@ class RecommendationsController < ApplicationController
     image_url = image_response["url_l"]
   end
 
-  def get_closest_five(location_info)
+  def get_closest_five(location_info, activity_name)
     orig_lat = location_info[:latitude]
     orig_lng = location_info[:longitude]
 
+    activities = {:hiking => 14, :biking => 5, :swimming => 106}
+
     # https://ridb.recreation.gov/api/v1/recareas?apikey=3D698306D5CF4F04A0D561F52B79AFED&radius=5&latitude=37.7749295&longitude=-122.4194155
     # get all recareas within 5 miles of specified location
-    uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=100&latitude=#{orig_lat}&longitude=#{orig_lng}")
+    uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=5&latitude=#{orig_lat}&longitude=#{orig_lng}&activity=#{activities[activity_name.to_sym]}")
+
     res = Net::HTTP.get(uri)
     recareas = JSON.parse(res)['RECDATA'].first(5)
-
-    distance = ''
-    travel_time = ''
 
     # each recarea = {image="", id=0, name="", distance="", travel_time=""}
     simplified_recreas = []
