@@ -14,7 +14,7 @@ class ActivitiesController < ApplicationController
       activity_names << {:activity_name => activity['ActivityName'].titleize}
     end
 
-    render json: {activities: activity_names.to_json}
+    render json: {activities: activity_names}
   end
 
 end
