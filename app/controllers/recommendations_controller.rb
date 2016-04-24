@@ -53,9 +53,9 @@ class RecommendationsController < ApplicationController
 
     # https://ridb.recreation.gov/api/v1/recareas?apikey=3D698306D5CF4F04A0D561F52B79AFED&radius=5&latitude=37.7749295&longitude=-122.4194155
     # get all recareas within 5 miles of specified location
-    uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=5&latitude=#{orig_lat}&longitude=#{orig_lng}")
+    uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=100&latitude=#{orig_lat}&longitude=#{orig_lng}")
     res = Net::HTTP.get(uri)
-    recareas = JSON.parse(res)['RECDATA']
+    recareas = JSON.parse(res)['RECDATA'].first(5)
 
     distance = ''
     travel_time = ''
