@@ -25,7 +25,7 @@ class RecommendationsController < ApplicationController
     # Retrieve top 5 recommendations based on where people from the specified area went
     start_loc_info = get_location_add(start_location)
 
-    render json: {recareas: get_closest_five(start_loc_info, activity_name).to_json}
+    render json: {recareas: get_closest_five(start_loc_info, activity_name)}
   end
 
   # get address of location. ex: "94101" returns "San Francisco, CA, USA"
