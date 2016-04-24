@@ -39,12 +39,16 @@ class RecommendationsController < ApplicationController
   end
 
   def get_image_url(latitude,longitude)
-    uri = URI("https://api.500px.com/v1/photos/search.json?geo=#{latitude},#{longitude}%2C10km&image_size=3&sort=undefined&only=Landscapes&_method=get&sdk_key=#{ENV['IMAGE_API_KEY']}&rpp=100")
+    uri = URI("https://api.500px.com/v1/photos/search.json?geo=#{latitude},#{longitude}%2C4km&image_size=3&sort=undefined&only=Landscapes&_method=get&sdk_key=#{ENV['IMAGE_API_KEY']}&rpp=100")
     res = Net::HTTP.get(uri)
     value = JSON.parse(res)
 
-    image_response = value['photos'].first['images'].first
-    image_url = image_response['url']
+    if value['photos'].length == 0
+      image_url = 'https://drscdn.500px.org/photo/124521529/w%3D280_h%3D280/50fde39b1c5dc856f6bd2a694a22505f?v=7'
+    else
+      image_response = value['photos'].first['images'].first
+      image_url = image_response['url']
+    end
   end
 
   def get_closest_five(location_info, activity_name, trans_mode)
