@@ -32,7 +32,7 @@ class RecommendationsController < ApplicationController
 
   # get address of location. ex: "94101" returns "San Francisco, CA, USA"
   def get_location_add(start_loc_input)
-    uri = URI("https://maps.googleapis.com/maps/api/geocode/json?address=#{start_loc_input}&sensor=true&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
+    uri = URI("https://maps.googleapis.com/maps/a.pi/geocode/json?address=#{start_loc_input}&sensor=true&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
     res = Net::HTTP.get(uri)
     json_result = JSON.parse(res)['results'].first
 
@@ -66,6 +66,7 @@ class RecommendationsController < ApplicationController
     # get all recareas within 5 miles of specified location
     uri = URI("https://ridb.recreation.gov/api/v1/recareas.json?apikey=#{ENV['RIDB_API_KEY']}&radius=100&latitude=#{orig_lat}&longitude=#{orig_lng}&activity=#{activities[activity_name.to_sym]}")
 
+    puts uri
     res = Net::HTTP.get(uri)
     recareas = JSON.parse(res)['RECDATA']
 
@@ -105,23 +106,6 @@ class RecommendationsController < ApplicationController
     end
 
     return simplified_recreas.sort {|first,second| first[:travel_time_seconds]<=>second[:travel_time_seconds]}
-  end
-
-  def distance(loc1, loc2)
-    rad_per_deg = Math::PI/180  # PI / 180
-    rkm = 6371                  # Earth radius in kilometers
-    rm = rkm * 1000             # Radius in meters
-
-    dlat_rad = (loc2[0]-loc1[0]) * rad_per_deg  # Delta, converted to rad
-    dlon_rad = (loc2[1]-loc1[1]) * rad_per_deg
-
-    lat1_rad, lon1_rad = loc1.map {|i| i * rad_per_deg }
-    lat2_rad, lon2_rad = loc2.map {|i| i * rad_per_deg }
-
-    a = Math.sin(dlat_rad/2)**2 + Math.cos(lat1_rad) * Math.cos(lat2_rad) * Math.sin(dlon_rad/2)**2
-    c = 2 * Math::atan2(Math::sqrt(a), Math::sqrt(1-a))
-
-    rm * c # Delta in meters
   end
 
 end
