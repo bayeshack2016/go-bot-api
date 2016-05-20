@@ -32,7 +32,7 @@ class RecommendationsController < ApplicationController
 
   # get address of location. ex: "94101" returns "San Francisco, CA, USA"
   def get_location_add(start_loc_input)
-    uri = URI("https://maps.googleapis.com/maps/a.pi/geocode/json?address=#{start_loc_input}&sensor=true&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
+    uri = URI("https://maps.googleapis.com/maps/api/geocode/json?address=#{start_loc_input}&sensor=true&key=#{ENV['GOOGLE_MAPS_API_KEY']}")
     res = Net::HTTP.get(uri)
     json_result = JSON.parse(res)['results'].first
 
